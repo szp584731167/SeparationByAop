@@ -24,10 +24,17 @@ import java.lang.reflect.Method;
 @Component
 public class DataSourceContextAop {
 
+    /**
+     * 切点。环绕型。只要用到了DataSourceSelector注解都会进入该方法
+     * @param pjp
+     * @return
+     * @throws Throwable
+     */
     @Around("@annotation(com.example.separation.dynamicdatasource.DataSourceSelector)")
     public Object setDynamicDataSource(ProceedingJoinPoint pjp) throws Throwable {
         boolean clear = true;
         try {
+            //通过反射获取注解所配置的信息
             Method method = this.getMethod(pjp);
             DataSourceSelector dataSourceImport = method.getAnnotation(DataSourceSelector.class);
             clear = dataSourceImport.clear();

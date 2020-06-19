@@ -23,6 +23,7 @@ public class UserService {
     @DataSourceSelector(value = DynamicDataSourceEnum.SLAVE)
     public List<User> listUser() {
         List<User> users = userMapper.selectAll();
+        System.out.println(userMapper);
         return users;
     }
 

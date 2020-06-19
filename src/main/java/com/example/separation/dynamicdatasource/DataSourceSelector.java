@@ -15,6 +15,15 @@ import java.lang.annotation.*;
 @Documented
 public @interface DataSourceSelector {
 
+    /**
+     * 根据注解选择数据源
+     * @return
+     */
     DynamicDataSourceEnum value() default DynamicDataSourceEnum.MASTER;
+
+    /**
+     * 默认为true,用在清除threadLocal,以防止在多线程情况下内存泄漏
+     * @return
+     */
     boolean clear() default true;
 }

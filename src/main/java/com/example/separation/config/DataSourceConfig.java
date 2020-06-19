@@ -47,6 +47,7 @@ public class DataSourceConfig {
 
     /**
      * 主从动态配置
+     * 配置默认数据库以及所有数据库
      */
     @Bean
     public DynamicDataSource dynamicDb(@Qualifier("masterDb") DataSource masterDataSource,
@@ -57,10 +58,18 @@ public class DataSourceConfig {
         if (slaveDataSource != null) {
             targetDataSources.put(DynamicDataSourceEnum.SLAVE.getDataSourceName(), slaveDataSource);
         }
+        //这里将数据源防止容器中，方便后期路由。根据key获取对应的数据源
         dynamicDataSource.setTargetDataSources(targetDataSources);
         dynamicDataSource.setDefaultTargetDataSource(masterDataSource);
         return dynamicDataSource;
     }
+
+    /**
+     * 创建SqlSessionFactory
+     * @param dynamicDataSource
+     * @return
+     * @throws Exception
+     */
     @Bean
     public SqlSessionFactory sessionFactory(@Qualifier("dynamicDb") DataSource dynamicDataSource) throws Exception {
         SqlSessionFactoryBean bean = new SqlSessionFactoryBean();
@@ -69,10 +78,22 @@ public class DataSourceConfig {
         bean.setDataSource(dynamicDataSource);
         return bean.getObject();
     }
+
+    /**
+     * SqlSessionTemplate
+     * @param sqlSessionFactory
+     * @return
+     */
     @Bean
     public SqlSessionTemplate sqlTemplate(@Qualifier("sessionFactory") SqlSessionFactory sqlSessionFactory) {
         return new SqlSessionTemplate(sqlSessionFactory);
     }
+
+    /**
+     * DataSourceTransactionManager
+     * @param dynamicDataSource
+     * @return
+     */
     @Bean(name = "dataSourceTx")
     public DataSourceTransactionManager dataSourceTx(@Qualifier("dynamicDb") DataSource dynamicDataSource) {
         DataSourceTransactionManager dataSourceTransactionManager = new DataSourceTransactionManager();
