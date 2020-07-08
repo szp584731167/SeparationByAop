@@ -7,6 +7,7 @@ import org.mybatis.spring.SqlSessionFactoryBean;
 import org.mybatis.spring.SqlSessionTemplate;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Qualifier;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.boot.autoconfigure.condition.ConditionalOnProperty;
 import org.springframework.boot.context.properties.ConfigurationProperties;
 import org.springframework.context.annotation.Bean;
@@ -39,7 +40,26 @@ public class DataSourceConfig {
      * 从库
      */
     @Bean
-    @ConditionalOnProperty(prefix = "spring.datasource", name = "slave", matchIfMissing = true)
+    /**
+     *  数组，获取对应property名称的值，与name不可同时使用
+     * 	String[] value() default {};
+     *
+     * 	配置属性名称的前缀，比如spring.http.encoding
+     * 	String prefix() default "";
+     *
+     * 	数组，配置属性完整名称或部分名称
+     *  可与prefix组合使用，组成完整的配置属性名称，与value不可同时使用
+     * 	String[] name() default {};
+     *
+     * 	可与name组合使用，比较获取到的属性值与havingValue给定的值是否相同，相同才加载配置
+     * 	String havingValue() default "";
+     *
+     * 	缺少该配置属性时是否可以加载。如果为true，没有该配置属性时也会正常加载；反之则不会生效
+     * 	boolean matchIfMissing() default false;
+     * 	目前试验：条件：配置文件没有配置slave,当matchIfMissing为false的时候可以加载，为true的时候不可以加载.这里不太明白
+     *
+     */
+    @ConditionalOnProperty(prefix = "spring.datasource", name = "slave",matchIfMissing = true)
     @ConfigurationProperties(prefix = "spring.datasource.slave")
     public DataSource slaveDb() {
         return DruidDataSourceBuilder.create().build();

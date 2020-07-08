@@ -12,16 +12,17 @@ import org.springframework.jdbc.datasource.lookup.AbstractRoutingDataSource;
  * 并且做了路由key与目标数据源之间的映射，提供基于key查找数据源的方法
  */
 public class DynamicDataSource extends AbstractRoutingDataSource {
-    @Override
+    /*@Override
     protected Object determineCurrentLookupKey() {
         return null;
-    }
+    }*/
+
     /**
      * 在mapper访问数据库时要确定数据源，根据DataSourceContextHolder.get()获取到key值，确定数据源建立链接执行sql返回数据
      * @return
      */
-    /*@Override
+    @Override
     protected Object determineCurrentLookupKey() {
         return DataSourceContextHolder.get();
-    }*/
+    }
 }
